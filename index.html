@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新湘遇 - 探索湖湘魅力</title>
+<link href="assets/static/project/daisyui@5.css" rel="stylesheet" type="text/css">
+<script src="assets/static/project/tailwind-browser@4.js"></script>
+<link href="assets/static/project/daisyui-themes.css" rel="stylesheet" type="text/css">
+<script src="./assets/3/3.1.1/iconify.min.js"></script>
+    <style>
+        .slideshow {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+        .slide {
+          position: absolute;
+          inset: 0;
+          background-size: cover;
+          background-position: center;
+          opacity: 0;
+          animation: fade 15s infinite;
+        }
+        .slide:nth-child(1) { animation-delay: 0s; }
+        .slide:nth-child(2) { animation-delay: 5s; }
+        .slide:nth-child(3) { animation-delay: 10s; }
+
+        @keyframes fade {
+          0%, 100% { opacity: 0; }
+          10%, 30% { opacity: 1; }
+        }
+        :root[data-theme="light"] {
+            --p: 226 48% 57%;
+            --s: 299 65% 51%;
+        }
+        :root {
+            --cultural-brown: #8B4513;
+            --cultural-cream: #FDF5E6;
+            --cultural-red: #DC143C;
+            --cultural-green: #228B22;
+        }
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.4) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            color: hsl(var(--p) / 1);
+            font-weight: 600;
+        }
+        .nav-link:hover:not(.active) {
+            color: hsl(var(--p) / 1);
+            background: hsl(var(--p) / 0.05);
+        }
+        .nav-indicator {
+            position: absolute;
+            top: 0;
+            bottom: auto;
+            height: 3px;
+            width: 0;
+            opacity: 0;
+            transition: all 0.4s ease;
+            background: linear-gradient(90deg,
+            hsl(var(--p) / 1),
+            hsl(var(--s) / 1)
+            );
+            border-radius: 2px;
+        }
+        .nav-indicator.active {
+            opacity: 1;
+        }
+        .btn.bg-gradient-to-r {
+            background-image: linear-gradient(135deg,
+            hsl(var(--p) / 1) 0%,
+            hsl(var(--s) / 1) 100%
+            );
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn.bg-gradient-to-r::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn.bg-gradient-to-r:hover::before { left: 100%; }
+        .main-content-wrapper { padding-top: 80px; }
+        .hero h1 { letter-spacing: 0.1em; line-height: 1.2; }
+        .card:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+        .carousel-item { transition: all 0.5s ease-in-out; }
+        html { scroll-behavior: smooth; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem !important; }
+            .hero p  { font-size: 1.25rem !important; }
+            section h2{ font-size: 2.5rem !important; }
+        }
+        .iconify { transition: transform 0.3s ease; }
+        .iconify:hover { transform: scale(1.1); }
+        .animated-gradient-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(-45deg,
+            hsl(var(--p) / 1),
+            hsl(var(--s) / 1),
+            hsl(var(--p) / 1),
+            hsl(var(--s) / 1)
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            z-index: 1;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50%{ background-position:100%50%; }
+            100%{ background-position:0%50%; }
+        }
+        #download { position: relative; }
+        #download::before {
+            content: '';
+            position: absolute; inset:0;
+            background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none; z-index:2;
+        }
+        .contact-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        footer {
+            background: linear-gradient(135deg,
+            hsl(var(--s) / 1) 0%,
+            hsl(var(--p) / 1) 100%
+            );
+        }
+        footer .btn-circle:hover {
+            background: hsl(var(--p) / 1);
+            color: inherit;
+            transform: translateY(-2px);
+        }
+        /* —— 屏幕圆角统一变量 —— */
+        :root { --screen-r: 48px; } /* 你也可调大，比如 56px */
+
+        /* 响应式外壳，去掉任何可能的内边距/背景 */
+        .mockup-phone.custom-iphone16{
+            width: clamp(240px, 24vw, 340px);
+            aspect-ratio: 430 / 890;
+            height: auto;
+            border-radius: calc(var(--screen-r) + 12px);   /* 外壳更大一点的圆角 */
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,.12);
+            background: transparent !important;
+        }
+
+        /* —— 关键：屏幕窗口裁切完全一致 —— */
+        .mockup-phone.custom-iphone16 .display{
+            padding: 0 !important;                 /* 去 bezel 内边距 */
+            background: transparent !important;    /* 去黑色底 */
+            border-radius: var(--screen-r) !important;
+            overflow: hidden;
+            /* 次保险：有些浏览器 border-radius 抗锯齿不好，clip-path 再裁一次 */
+            -webkit-clip-path: inset(0 round var(--screen-r));
+            clip-path: inset(0 round var(--screen-r));
+            transform: translateZ(0);              /* 避免子像素缝 */
+        }
+
+        .mockup-phone.custom-iphone16 .artboard{
+            padding: 0 !important;
+            background: transparent !important;    /* DaisyUI 默认可能有背景色 */
+            border-radius: var(--screen-r) !important;
+            overflow: hidden;
+            -webkit-clip-path: inset(0 round var(--screen-r));
+            clip-path: inset(0 round var(--screen-r));
+        }
+
+        /* 轮播与图片完全占满并去掉行内空隙 */
+        .mockup-phone.custom-iphone16 .carousel{
+            width: 100%;
+            height: 100%;
+            gap: 0 !important;
+        }
+
+        .mockup-phone.custom-iphone16 .carousel-item{
+            width: 100% !important;
+            flex: 0 0 100% !important;
+        }
+
+        .mockup-phone.custom-iphone16 .carousel-item img{
+            display: block;           /* 避免行内空隙造成的白/黑线 */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 再稳一点：图片圆角略大 0.5px，盖住任何潜在缝隙 */
+            border-radius: calc(var(--screen-r) + 0.5px);
+        }
+
+        /* 小屏再小点 */
+        @media (max-width: 768px){
+            :root { --screen-r: 44px; } /* 移动端圆角略小，比例更自然 */
+            .mockup-phone.custom-iphone16{ width: min(72vw, 320px); }
+        }
+
+    </style>
+  <script src="assets/static/project/25_6/holder.js"></script></head>
+  <body class="bg-base-100">
+  <nav id="mainNavbar" class="navbar fixed top-0 z-50 bg-base-100/95 backdrop-blur-md border-b">
+      <div class="navbar-start">
+          <div class="dropdown lg:hidden">
+              <label tabindex="0" class="btn btn-ghost">
+                  <span class="iconify" data-icon="heroicons:bars-3"></span>
+              </label>
+              <ul tabindex="0" class="menu menu-vertical dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                  <li><a class="nav-link" href="#hero">首页</a></li>
+                  <li><a class="nav-link" href="#about">关于我们</a></li>
+                  <li><a class="nav-link" href="#features">核心功能</a></li>
+                  <li><a class="nav-link" href="#preview">界面预览</a></li>
+                  <li><a class="nav-link" href="#download">立即体验</a></li>
+              </ul>
+          </div>
+          <a class="btn btn-ghost text-xl font-bold" style="font-family: serif;">新湘遇</a>
+      </div>
+
+      <div class="navbar-center flex">
+          <ul class="menu menu-horizontal px-1 relative">
+              <div id="navIndicator" class="nav-indicator"></div>
+            <li><a class="nav-link px-6 py-3" href="#hero" data-section="hero">首页</a></li>
+            <li><a class="nav-link px-6 py-3" href="#about" data-section="about">关于我们</a></li>
+            <li><a class="nav-link px-6 py-3" href="#features" data-section="features">核心功能</a></li>
+            <li><a class="nav-link px-6 py-3" href="#preview" data-section="preview">界面预览</a></li>
+            <li><a class="nav-link px-6 py-3" href="#download" data-section="download">立即体验</a></li>
+          </ul>
+      </div>
+      <div class="navbar-end">
+          <button class="btn bg-gradient-to-r from-primary to-secondary" onclick="scrollToSection('download')">
+              <span class="iconify" data-icon="heroicons:rocket-launch"></span>
+          </button>
+      </div>
+  </nav>
+    <div class="main-content-wrapper">
+      <section id="hero" class="relative min-h-screen flex items-center justify-center text-center text-neutral-content overflow-hidden">
+        <!-- 背景轮播 -->
+        <div class="absolute inset-0">
+          <div class="slideshow absolute inset-0">
+            <div class="slide bg-[url('/assets/backgrounds/bg1.jpg')]"></div>
+            <div class="slide bg-[url('/assets/backgrounds/bg2.jpg')]"></div>
+            <div class="slide bg-[url('/assets/backgrounds/bg3.jpg')]"></div>
+          </div>
+          <div class="absolute inset-0 bg-black/30"></div>
+        </div>
+
+        <!-- 内容居中 -->
+        <div class="relative z-10 max-w-4xl">
+          <h1 class="mb-8 text-7xl font-bold text-white" style="font-family: serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+            新湘遇
+          </h1>
+          <p class="mb-8 text-2xl text-white/90" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+            探索湖湘魅力，尽在新湘遇
+          </p>
+          <button class="btn btn-primary btn-lg px-8 py-4 text-lg">
+            开启您的湖湘之旅
+          </button>
+        </div>
+      </section>
+      <section id="about" class="py-24 bg-base-200">
+        <div class="container mx-auto px-8">
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="flex items-center justify-center mb-8">
+              <span class="iconify text-6xl text-primary mr-4" data-icon="material-symbols:cloud-outline" data-width="64"></span>
+              <h2 id="ic32q" class="text-5xl font-bold text-base-content" style="font-family: serif;">
+                关于新湘遇
+              </h2>
+              <span class="iconify text-6xl text-primary ml-4" data-icon="material-symbols:cloud-outline" data-width="64"></span>
+            </div>
+            <div class="space-y-8 text-lg leading-relaxed text-base-content/80">
+              <p>
+                新湘遇是一款专为湖南文化旅游打造的小程序，致力于为用户提供最地道、最深度的湖湘文化体验。我们深入挖掘湖南的历史文化底蕴，精心策划独特的旅游路线，让每一位游客都能感受到湖湘大地的独特魅力。
+              </p>
+              <p>
+                无论您是初次来到湖南的游客，还是想要重新发现家乡美好的本地人，新湘遇都将为您开启一段难忘的文化探索之旅。从古色古香的历史建筑到风景如画的自然山水，从传统的民俗文化到现代的都市风情，我们为您精心呈现湖南的多元魅力。
+              </p>
+              <p>
+                让我们一起走进湖湘文化的深处，发现那些隐藏在时光中的美好故事，体验最纯正的湖南风情。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="features" class="py-24 bg-base-100 features spark-custom-features">
+        <div class="container mx-auto px-8">
+          <div class="text-center mb-16">
+            <h2 id="iehzg" class="text-5xl font-bold text-base-content mb-4" style="font-family: serif;">
+              我们的核心功能
+            </h2>
+            <div class="w-24 h-1 bg-primary mx-auto"></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <div data-repeatable="true" class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div class="card-body text-center">
+                <div class="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span class="iconify text-5xl text-primary" data-icon="heroicons:map-pin" data-width="48"></span>
+                </div>
+                <h3 class="card-title text-2xl justify-center mb-4">
+                  景点推荐
+                </h3>
+                <p class="text-base-content/70 mb-6">
+                  精选湖南最具特色的文化景点和自然风光，为您推荐最值得游览的目的地。
+                </p>
+                <div class="bg-base-100 p-4 rounded-lg text-left">
+                  <h4 class="font-semibold text-base-content mb-2">
+                    功能特色：
+                  </h4>
+                  <ul class="text-sm text-base-content/80 space-y-1">
+                    <li>• 热门景点实时推荐</li>
+                    <li>• 个性化兴趣匹配</li>
+                    <li>• 详细景点介绍与攻略</li>
+                    <li>• 用户评价与评分系统</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div data-repeatable="true" class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div class="card-body text-center">
+                <div class="w-24 h-24 mx-auto mb-6 bg-secondary/10 rounded-full flex items-center justify-center">
+                  <span class="iconify text-5xl text-secondary" data-icon="heroicons:map" data-width="48"></span>
+                </div>
+                <h3 class="card-title text-2xl justify-center mb-4">
+                  路线推荐
+                </h3>
+                <p class="text-base-content/70 mb-6">
+                  智能规划最优旅游路线，让您的湖湘之旅更加高效便捷。
+                </p>
+                <div class="bg-base-100 p-4 rounded-lg text-left">
+                  <h4 class="font-semibold text-base-content mb-2">
+                    功能特色：
+                  </h4>
+                  <ul class="text-sm text-base-content/80 space-y-1">
+                    <li>• 智能路线规划算法</li>
+                    <li>• 多日行程定制服务</li>
+                    <li>• 交通方式优化建议</li>
+                    <li>• 时间成本精准计算</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div data-repeatable="true" class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div class="card-body text-center">
+                <div class="w-24 h-24 mx-auto mb-6 bg-accent/10 rounded-full flex items-center justify-center">
+                  <span class="iconify text-5xl text-accent" data-icon="heroicons:fire" data-width="48"></span>
+                </div>
+                <h3 class="card-title text-2xl justify-center mb-4">
+                  美食推荐
+                </h3>
+                <p class="text-base-content/70 mb-6">
+                  精选湖南特色美食推荐，从街头小吃到传统湘菜，让您的味蕾体验最正宗的湖湘风味。
+                </p>
+                <div class="bg-base-100 p-4 rounded-lg text-left">
+                  <h4 class="font-semibold text-base-content mb-2">
+                    功能特色：
+                  </h4>
+                  <ul class="text-sm text-base-content/80 space-y-1">
+                    <li>• 地道湘菜餐厅推荐</li>
+                    <li>• 特色小吃地图导航</li>
+                    <li>• 美食文化背景介绍</li>
+                    <li>• 口味偏好智能匹配</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="preview" class="py-24 bg-base-200">
+        <div class="container mx-auto px-8 text-center">
+          <h2 class="text-5xl font-bold mb-4">预览小程序界面</h2>
+          <p class="text-xl text-base-content/70 mb-8">沉浸式体验，尽在指尖</p>
+          <div class="flex justify-center">
+            <div id="ikpfk" class="mockup-phone custom-iphone16 border-primary">
+              <div class="camera"></div>
+              <div class="display">
+                <div class="artboard artboard-demo phone-1 w-full h-full">
+                  <div class="carousel w-full h-full">
+                    <div id="slide1" class="carousel-item relative">
+                      <img alt="文化路线" src="assets/samples/sa1.jpg">
+                    </div>
+                    <div id="slide2" class="carousel-item relative">
+                      <img alt="景点推荐" src="assets/samples/sa2.jpg">
+                    </div>
+                    <div id="slide3" class="carousel-item relative">
+                      <img alt="美食推荐" src="assets/samples/sa3.jpg">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="download" class="py-24 relative overflow-hidden text-white download spark-custom-download">
+        <div id="i2pglx" class="animated-gradient-bg i2pglx spark-custom-i2pglx"></div>
+        <div class="container mx-auto px-8 text-center relative z-10">
+          <h2 id="ilmvrj" class="text-6xl font-bold mb-8" style="font-family: serif;">
+            立即体验，开启湖湘之旅！
+          </h2>
+          <p class="text-2xl mb-12 opacity-90">
+            扫描下方二维码，或点击链接下载
+          </p>
+          <div class="flex flex-col lg:flex-row items-center justify-center gap-16">
+            <div class="text-center">
+              <div class="w-64 h-64 bg-white rounded-2xl p-8 mx-auto mb-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+                <img alt="新湘遇小程序二维码" class="w-full h-full object-contain" data-src="placehold.co/192x192.png?text=QR+Code+for+Mini+Program">
+              </div>
+              <p class="text-lg opacity-80">微信扫码体验</p>
+            </div>
+            <div class="text-center">
+              <button id="ixaqug" class="btn btn-secondary btn-lg px-12 py-4 text-xl mb-4 transform hover:scale-105 transition-transform duration-300 ixaqug spark-custom-ixaqug">
+                在微信中打开
+              </button>
+              <p class="text-lg opacity-80">点击直接访问</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="i1vrwe" class="py-16 bg-base-200 i1vrwe spark-custom-i1vrwe">
+        <div class="container mx-auto px-8">
+          <div class="text-center mb-12">
+            <h2 id="ieor2t" class="text-4xl font-bold text-base-content mb-4" style="font-family: serif;">
+              联系我们
+            </h2>
+            <div class="w-24 h-1 bg-primary mx-auto"></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="text-center">
+              <div class="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                <span class="iconify text-3xl text-primary" data-icon="heroicons:envelope" data-width="32"></span>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">邮箱联系</h3>
+              <p class="text-base-content/70">contact@xinxiangyu.com</p>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 mx-auto mb-4 bg-secondary/10 rounded-full flex items-center justify-center">
+                <span class="iconify text-3xl text-secondary" data-icon="heroicons:phone" data-width="32"></span>
+              </div>
+              <h3 id="iuwmj8" class="text-xl font-semibold mb-2 iuwmj8 spark-custom-iuwmj8">
+                联系电话
+              </h3>
+              <p id="ik21pa" class="text-base-content/70 ik21pa spark-custom-ik21pa">
+                13888888888
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 mx-auto mb-4 bg-accent/10 rounded-full flex items-center justify-center">
+                <span class="iconify text-3xl text-accent" data-icon="heroicons:map-pin" data-width="32"></span>
+              </div>
+              <h3 id="ik80dh" class="text-xl font-semibold mb-2 ik80dh spark-custom-ik80dh">
+                团队地址
+              </h3>
+              <p class="text-base-content/70">湖南省长沙市岳麓区</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <footer id="it7qrm" class="bg-base-300 text-base-content py-12 it7qrm spark-custom-it7qrm">
+      <div id="i3ybth" class="container mx-auto px-8 i3ybth spark-custom-i3ybth">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="md:col-span-2">
+            <h3 id="i9nq2g" class="text-2xl font-bold mb-4" style="font-family: serif;">
+              新湘遇
+            </h3>
+            <p class="text-base-content/70 mb-4 leading-relaxed">
+              专注于湖南文化旅游的创新平台，致力于为用户提供最地道、最深度的湖湘文化体验。
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="btn btn-circle btn-sm btn-ghost"><span class="iconify" data-icon="heroicons:chat-bubble-left-right" data-width="20"></span></a><a href="#" class="btn btn-circle btn-sm btn-ghost"><span class="iconify" data-icon="heroicons:phone" data-width="20"></span></a><a href="#" class="btn btn-circle btn-sm btn-ghost"><span class="iconify" data-icon="heroicons:envelope" data-width="20"></span></a>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4">快速链接</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#about" id="ixe7sz" class="text-base-content/70 hover:text-primary transition-colors ixe7sz spark-custom-ixe7sz">关于我们</a>
+              </li>
+              <li>
+                <a href="#features" class="text-base-content/70 hover:text-primary transition-colors">核心功能</a>
+              </li>
+              <li>
+                <a href="#preview" class="text-base-content/70 hover:text-primary transition-colors">界面预览</a>
+              </li>
+              <li id="i3jtdo" class="i3jtdo spark-custom-i3jtdo">
+                <a href="#download" class="text-base-content/70 hover:text-primary transition-colors">立即体验</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4">法律信息</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-base-content/70 hover:text-primary transition-colors">隐私政策</a>
+              </li>
+              <li>
+                <a href="#" class="text-base-content/70 hover:text-primary transition-colors">服务条款</a>
+              </li>
+              <li>
+                <a href="#" class="text-base-content/70 hover:text-primary transition-colors">用户协议</a>
+              </li>
+              <li>
+                <a href="#" class="text-base-content/70 hover:text-primary transition-colors">免责声明</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="divider my-8"></div>
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="text-base-content/60 text-sm mb-4 md:mb-0">
+            <p>© 2024 新湘遇科技有限公司. 保留所有权利.</p>
+          </div>
+          <div class="text-base-content/60 text-sm">
+            <p>技术支持：新湘遇开发团队</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("mainNavbar");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const navIndicator = document.getElementById("navIndicator");
+    const sections = document.querySelectorAll("section[id]");
+    window.addEventListener("scroll", function() {
+        if (window.scrollY > 50) {
+            navbar.classList.add("scrolled");
+        } else {
+            navbar.classList.remove("scrolled");
+        }
+        updateActiveNavItem();
+    });
+    function updateActiveNavItem() {
+        let current = "";
+        const scrollPosition = window.scrollY + 120; // 增加偏移量以更准确地检测当前区域
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100; // 提前触发区域
+            const sectionHeight = section.offsetHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                current = section.getAttribute("id");
+            }
+        });
+
+        if (!current && sections.length > 0) {
+            current = sections[0].getAttribute("id");
+        }
+        navLinks.forEach(link => {
+            link.classList.remove("active");
+        });
+
+        if (current) {
+            const activeLink = document.querySelector(`[data-section="${current}"]`);
+            if (activeLink) {
+                activeLink.classList.add("active");
+                // 使用 requestAnimationFrame 确保动画流畅
+                requestAnimationFrame(() => {
+                    updateIndicator(activeLink);
+                });
+            }
+        }
+    }
+
+    function updateIndicator(activeLink) {
+        if (!activeLink || !navIndicator) return;
+        
+        const linkRect = activeLink.getBoundingClientRect();
+        const navRect = activeLink.closest(".menu").getBoundingClientRect();
+        
+        const left = linkRect.left - navRect.left;
+        const width = linkRect.width;
+        navIndicator.style.transform = `translateX(${left}px)`;
+        navIndicator.style.width = width + "px";
+        navIndicator.classList.add("active");
+        navIndicator.style.opacity = "1";
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute("data-section");
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80;
+                navLinks.forEach(l => l.classList.remove("active"));
+                this.classList.add("active");
+                updateIndicator(this);
+                
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: "smooth"
+                });
+            }
+        });
+        link.addEventListener("mouseenter", function() {
+            if (!this.classList.contains("active")) {
+                this.style.transform = "translateY(-1px)";
+            }
+        });
+        
+        link.addEventListener("mouseleave", function() {
+            if (!this.classList.contains("active")) {
+                this.style.transform = "translateY(0)";
+            }
+        });
+    });
+
+    setTimeout(() => {
+        updateActiveNavItem();
+    }, 100);
+
+    window.addEventListener("resize", function() {
+        setTimeout(() => {
+            const activeLink = document.querySelector(".nav-link.active");
+            if (activeLink) {
+                updateIndicator(activeLink);
+            }
+        }, 100);
+    });
+});
+
+function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        const offsetTop = element.offsetTop - 80;
+        window.scrollTo({
+            top: offsetTop,
+            behavior: "smooth"
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const carousel = document.querySelector(".carousel");
+    if (carousel) {
+        let currentSlide = 1;
+        const totalSlides = 3;
+        
+        setInterval(() => {
+            currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+            const nextSlide = document.getElementById(`slide${currentSlide}`);
+            if (nextSlide) {
+                const carousel = nextSlide.parentElement;
+                const slideWidth = nextSlide.offsetWidth;
+                const targetScrollLeft = slideWidth * (currentSlide - 1);
+                carousel.scrollTo({
+                    left: targetScrollLeft,
+                    behavior: "smooth"
+                });
+            }
+        }, 4000);
+    }
+});
+
+window.addEventListener("load", function() {
+    document.body.style.opacity = "0";
+    document.body.style.transition = "opacity 0.5s ease-in-out";
+    setTimeout(() => {
+        document.body.style.opacity = "1";
+    }, 100);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const hero = document.getElementById("hero");
+  const backgrounds = ["hero-bg1", "hero-bg2", "hero-bg3"];
+  let index = 0;
+
+  setInterval(() => {
+    hero.classList.remove(...backgrounds);
+    hero.classList.add(backgrounds[index]);
+    index = (index + 1) % backgrounds.length;
+  }, 5000);
+});
+
+</script>
+  
+
+<script>
+    setTimeout(() => {
+      Holder.run({
+        domain: "placehold.co"
+      })
+    }, 100)
+  </script></body>
+</html>
+            
